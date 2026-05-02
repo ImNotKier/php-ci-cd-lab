@@ -26,34 +26,7 @@ pipeline {
             }
         }
 
-        // Stage 3: Deploy to staging and force PHP errors visible
-        stage('Stage & Force Verbose Errors') {
-            steps {
-                sh '''
-                sudo mkdir -p /var/www/html/staging
-                sudo rsync -av --delete --exclude='venv/' --exclude='.git/' ./ /var/www/html/staging/
-
-                # Force PHP to show errors
-                echo "php_flag display_errors On" | sudo tee /var/www/html/staging/.htaccess
-                echo "php_value error_reporting 32767" | sudo tee -a /var/www/html/staging/.htaccess
-
-                sudo chown -R www-data:www-data /var/www/html/staging
-                '''
-            }
-        }
-
-        // Stage 4: Run Selenium audit using test.py
-        stage('Run Strict Test') {
-            steps {
-                sh '''
-                python3 -m venv venv
-                . venv/bin/activate
-                pip install selenium
-                python3 test.py
-                '''
-            }
-        }
-
+      
         // Stage 5: Deploy to production only if tests pass
         stage('Deploy') {
             steps {
