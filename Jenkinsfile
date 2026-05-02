@@ -6,6 +6,7 @@ pipeline {
         GIT_BRANCH = 'main'
     }
     stages {
+        // Stage 1: Pull the code
         stage('Checkout') {
             steps {
                 checkout([$class: 'GitSCM',
@@ -14,6 +15,8 @@ pipeline {
                 ])
             }
         }
+
+        // Stage 2: Detect which PHP file changed
         stage('Detect Change') {
             steps {
                 script {
@@ -22,20 +25,24 @@ pipeline {
                 }
             }
         }
+
+        // Stage 3: Deploy to staging and force PHP errors visible
         stage('Stage & Force Verbose Errors') {
             steps {
                 sh '''
                 sudo mkdir -p /var/www/html/staging
                 sudo rsync -av --delete --exclude='venv/' --exclude='.git/' ./ /var/www/html/staging/
-                
-                # Force PHP to display errors
+
+                # Force PHP to show errors
                 echo "php_flag display_errors On" | sudo tee /var/www/html/staging/.htaccess
                 echo "php_value error_reporting 32767" | sudo tee -a /var/www/html/staging/.htaccess
-                
+
                 sudo chown -R www-data:www-data /var/www/html/staging
                 '''
             }
         }
+
+        // Stage 4: Run Selenium audit using test.py
         stage('Run Strict Test') {
             steps {
                 sh '''
@@ -46,10 +53,11 @@ pipeline {
                 '''
             }
         }
+
+        // Stage 5: Deploy to production only if tests pass
         stage('Deploy') {
             steps {
                 sh '''
-                # Only deploy if test.py succeeded
                 sudo rsync -av --delete --exclude='venv/' --exclude='.git/' --exclude='staging/' ./ /var/www/html/
                 sudo chown -R www-data:www-data /var/www/html/
                 '''
