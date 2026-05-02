@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         GIT_REPO_URL = 'https://github.com/ImNotKier/php-ci-cd-lab.git'
-        GIT_CREDENTIALS_ID = 'github-pat'
+        GIT_CREDENTIALS_ID = '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'
         GIT_BRANCH = 'main'
     }
     stages {
