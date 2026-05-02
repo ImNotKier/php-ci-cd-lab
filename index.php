@@ -1,5 +1,5 @@
 <?php
-$message = "💻 Hello CI/CD World! Keep coding and stay awesome! ✨";
+$message = "Hello CI/CD World! kierrrrrrrrrrr;
 ?>
 <!DOCTYPE html>
 <html>
