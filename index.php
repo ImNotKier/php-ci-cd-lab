@@ -1,5 +1,5 @@
 <?php
-$message = "Hello CI/CD World! kierrrrrrrrrrr;
+$message = "Hello CI/CD World! kierrrrrrrrrrr"
 ?>
 <!DOCTYPE html>
 <html>
